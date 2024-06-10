@@ -1,0 +1,31 @@
+{
+  "name": "datn-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec ./node_modules/.bin/babel-node src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/node": "^7.23.9",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "lodash": "^4.17.21",
+    "mysql2": "^2.2.5",
+    "nodemon": "^3.1.0",
+    "passport-google-oauth20": "2.0.0",
+    "sequelize": "^6.6.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "sequelize-cli": "^6.2.0"
+  }
+}
