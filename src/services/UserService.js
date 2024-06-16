@@ -44,11 +44,18 @@ let handleUserlogin = (email, password) => {
             "password",
             "firstName",
             "lastName",
+            "gender",
+            "phoneNumber",
+            "image",
+            "address",
           ],
           where: { email: email },
           raw: true,
         });
         if (user) {
+          if (user.image) {
+            user.image = Buffer.from(user.image, "base64").toString("binary");
+          }
           let check = await bcrypt.compareSync(password, user.password);
           if (check) {
             userData.errCode = 0;

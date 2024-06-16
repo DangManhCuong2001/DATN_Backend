@@ -26,6 +26,25 @@ module.exports = {
       timeType: {
         type: Sequelize.STRING,
       },
+      phoneNumber: {
+        type: Sequelize.STRING,
+      },
+      fullName: {
+        type: Sequelize.STRING,
+      },
+      reason: {
+        type: Sequelize.STRING,
+      },
+      dateOfBirth: {
+        type: Sequelize.STRING,
+      },
+      gender: {
+        type: Sequelize.STRING,
+      },
+      address: {
+        type: Sequelize.STRING,
+      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

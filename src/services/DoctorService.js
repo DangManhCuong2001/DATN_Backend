@@ -300,6 +300,44 @@ let getScheduleDoctorsServices = (doctorId, date) => {
   });
 };
 
+let doneAppointmentService = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.apppointmentId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing parameter",
+        });
+      } else {
+        console.log(data);
+        const appoinment = await db.Booking.findOne({
+          where: {
+            id: data.apppointmentId,
+            statusId: "S2",
+          },
+          raw: false,
+        });
+
+        if (appoinment) {
+          appoinment.statusId = "S3";
+          await appoinment.save();
+          resolve({
+            errCode: 0,
+            errMessage: "ok",
+          });
+        } else {
+          resolve({
+            errCode: 2,
+            errMessage: "not found appointment or actived!",
+          });
+        }
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllDoctors: getAllDoctors,
   saveInfoDoctorsService: saveInfoDoctorsService,
@@ -307,4 +345,5 @@ module.exports = {
   getListDoctorByHospitalService: getListDoctorByHospitalService,
   bulkCreateScheduleServices: bulkCreateScheduleServices,
   getScheduleDoctorsServices: getScheduleDoctorsServices,
+  doneAppointmentService: doneAppointmentService,
 };

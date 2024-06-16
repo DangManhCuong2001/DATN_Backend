@@ -98,6 +98,20 @@ let handleGetScheduleDoctors = async (req, res) => {
   }
 };
 
+let handleDoneAppointment = async (req, res) => {
+  try {
+    let info = await doctorService.doneAppointmentService(req.body);
+    console.log(req.body);
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllDoctors: handleGetAllDoctors,
   handleSaveInfoDoctors: handleSaveInfoDoctors,
@@ -105,4 +119,5 @@ module.exports = {
   handleListDoctorByHospital: handleListDoctorByHospital,
   handleBulkCreateSchedule: handleBulkCreateSchedule,
   handleGetScheduleDoctors: handleGetScheduleDoctors,
+  handleDoneAppointment: handleDoneAppointment,
 };

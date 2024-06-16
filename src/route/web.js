@@ -83,6 +83,18 @@ let initWebRoutes = (app) => {
     PatientController.handleGetListPatientForDoctor
   );
 
+  router.post(
+    "/api/verify-book-appointment",
+    PatientController.handleVerifyBookAppointment
+  );
+
+  router.get(
+    "/api/get-appointments-patient",
+    PatientController.handleGetAppointmentsPatient
+  );
+
+  router.post("/api/done-appointment", DoctorsController.handleDoneAppointment);
+
   // router.get(
   //   "/auth/google",
   //   passport.authenticate("google", { scope: ["profile"] })
