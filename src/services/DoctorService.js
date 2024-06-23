@@ -29,7 +29,7 @@ let checkRequiredFields = (inputData) => {
     // "selectedPayment",
     "province",
     // "addressClinic",
-    "note",
+    // "note",
     "specialtySelected",
     "hospitalSelected",
   ];
@@ -58,27 +58,26 @@ let saveInfoDoctorsService = (inputData) => {
           errMessage: `Missing Parameter: ${checkObj.element}`,
         });
       } else {
+        console.log("cuonggggggggggggggggg");
         //UpSert table Markdown
-        // if (inputData.action === "CREATE") {
-        //   await db.Markdown.create({
-        //     contentHTML: inputData.contentHTML,
-        //     contentMarkdown: inputData.contentMarkdown,
-        //     description: inputData.description,
-        //     doctorId: inputData.doctorId,
-        //   });
-        // } else if (inputData.action === "EDIT") {
-        //   let doctorMarkdown = await db.Markdown.findOne({
-        //     where: { doctorId: inputData.doctorId },
-        //     raw: false,
-        //   });
-        //   if (doctorMarkdown) {
-        //     doctorMarkdown.contentHTML = inputData.contentHTML;
-        //     doctorMarkdown.contentMarkdown = inputData.contentMarkdown;
-        //     doctorMarkdown.description = inputData.description;
-        //     doctorMarkdown.updateAt = new Date();
-        //     await doctorMarkdown.save();
-        //   }
-        // }
+        let doctorMarkdown = await db.Markdown.findOne({
+          where: { doctorId: inputData.doctorSelected },
+          raw: false,
+        });
+        if (!doctorMarkdown) {
+          await db.Markdown.create({
+            contentHTML: inputData.contentHTML,
+            contentMarkdown: inputData.contentMarkdown,
+            description: inputData.description,
+            doctorId: inputData.doctorSelected,
+          });
+        } else {
+          doctorMarkdown.contentHTML = inputData.contentHTML;
+          doctorMarkdown.contentMarkdown = inputData.contentMarkdown;
+          doctorMarkdown.description = inputData.description;
+          doctorMarkdown.updateAt = new Date();
+          await doctorMarkdown.save();
+        }
 
         //UpSert table doctorInfo
         let doctorInfo = await db.Doctor_Info.findOne({
@@ -140,10 +139,10 @@ let getInfoDoctorService = (inputId) => {
             exclude: ["password"],
           },
           include: [
-            // {
-            //   model: db.Markdown,
-            //   attributes: ["description", "contentHTML", "contentMarkdown"],
-            // },
+            {
+              model: db.Markdown,
+              attributes: ["description", "contentHTML", "contentMarkdown"],
+            },
             // {
             //   model: db.Allcode,
             //   as: "positionData",
@@ -159,13 +158,27 @@ let getInfoDoctorService = (inputId) => {
           raw: false,
           nest: true,
         });
+        let dataHospital = {};
+        let dataSpecialty = {};
+        if (data && data.Doctor_Info.clinicId && data.Doctor_Info.specialtyId) {
+          dataHospital = await db.Hospital.findOne({
+            where: { id: data.Doctor_Info.clinicId },
+          });
+          // dataHospital = ccc;
+          // console.log("dsfsdfsdfdsf", dataHospital);
+          dataSpecialty = await db.Specialty.findOne({
+            where: { id: data.Doctor_Info.specialtyId },
+          });
+          // dataSpecialty = ddd;
+        }
         if (data && data.image) {
           data.image = Buffer.from(data.image, "base64").toString("binary");
         }
+        console.log("data", data);
         if (!data) data = {};
         resolve({
           errCode: 0,
-          doctorInfo: data,
+          doctorInfo: { data, dataHospital, dataSpecialty },
         });
       }
     } catch (e) {
@@ -205,6 +218,19 @@ let getListDoctorByHospitalService = (hospitalId) => {
           raw: false,
           nest: true,
         });
+        console.log("oooooooooooooooooooooooooooooooooooooooooooo", data);
+        if (data) {
+          data.map((item) => {
+            console.log("xxxxxxxxxxxxxxxxx", item.User);
+            if (item.User.image) {
+              item.User.image = Buffer.from(item.User.image, "base64").toString(
+                "binary"
+              );
+              return item;
+            }
+          });
+        }
+
         if (!data) data = [];
         resolve({
           errCode: 0,

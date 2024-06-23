@@ -94,6 +94,12 @@ let initWebRoutes = (app) => {
   );
 
   router.post("/api/done-appointment", DoctorsController.handleDoneAppointment);
+  router.post("/api/save-rate-point", PatientController.handleSaveRatePoint);
+  router.get(
+    "/api/get-list-rate-point",
+    PatientController.handleGetListRatePoint
+  );
+  router.get("/api/search-data", PatientController.handleSearchData);
 
   // router.get(
   //   "/auth/google",

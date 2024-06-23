@@ -59,9 +59,56 @@ let handleGetAppointmentsPatient = async (req, res) => {
   }
 };
 
+let handleSaveRatePoint = async (req, res) => {
+  try {
+    let info = await PatientService.saveRatePointService(req.body);
+    console.log(req.body);
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
+let handleGetListRatePoint = async (req, res) => {
+  console.log("cuongggg", req.query);
+  try {
+    let info = await PatientService.getListRatePointServices(
+      req.query.doctorId
+    );
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
+let handleSearchData = async (req, res) => {
+  try {
+    let info = await PatientService.searchDataService(req.query.keyword);
+    console.log(req.body);
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
 module.exports = {
   handleBookAppointment: handleBookAppointment,
   handleGetListPatientForDoctor: handleGetListPatientForDoctor,
   handleVerifyBookAppointment: handleVerifyBookAppointment,
   handleGetAppointmentsPatient: handleGetAppointmentsPatient,
+  handleSaveRatePoint: handleSaveRatePoint,
+  handleGetListRatePoint: handleGetListRatePoint,
+  handleSearchData: handleSearchData,
 };
