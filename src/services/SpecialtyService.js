@@ -57,7 +57,48 @@ let createNewSpecialtyService = (data) => {
   });
 };
 
+let getListSpecialtybyHospitalService = (hospitalId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // let data = await db.Doctor_Info.findAll({
+      //   where: { clinicId: hospitalId },
+      //   include: [
+      //     {
+      //       model: db.Specialty,
+      //       attributes: ["id", "name"],
+      //     },
+      //   ],
+      // });
+      const data = await db.Specialty.findAll({
+        include: [
+          {
+            model: db.Doctor_Info,
+            where: { clinicId: hospitalId },
+            attributes: [], // Để chỉ lấy dữ liệu từ bảng Specialty
+          },
+        ],
+      });
+      if (data && data.length > 0) {
+        data.map((item) => {
+          if (item.image) {
+            item.image = Buffer.from(item.image, "base64").toString("binary");
+          }
+          return item;
+        });
+      }
+      resolve({
+        errMessage: "ok",
+        errCode: 0,
+        data: data,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getAllSpecialtyService: getAllSpecialtyService,
   createNewSpecialtyService: createNewSpecialtyService,
+  getListSpecialtybyHospitalService: getListSpecialtybyHospitalService,
 };

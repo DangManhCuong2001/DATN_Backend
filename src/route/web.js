@@ -42,6 +42,11 @@ let initWebRoutes = (app) => {
     SpecialtyController.handleCreateNewSpecialty
   );
 
+  router.get(
+    "/api/get-list-specialty-by-hospital",
+    SpecialtyController.handleGetListSpecialtybyHospital
+  );
+
   //Hospital
   router.post(
     "/api/create-new-hospital",

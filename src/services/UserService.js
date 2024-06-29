@@ -178,8 +178,8 @@ let updateUserData = (data) => {
         user.lastName = data.lastName;
         user.address = data.address;
         user.phoneNumber = data.phoneNumber;
-        user.roleID = data.roleID;
-        user.positionID = data.positionID;
+        user.roleId = data.roleId;
+        user.positionId = data.positionId;
         user.gender = data.gender;
         user.image = data.image;
         await user.save();

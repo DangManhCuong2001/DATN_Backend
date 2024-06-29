@@ -45,6 +45,13 @@ let createNewHospitalService = (data) => {
           errMessage: "Missing parameter!",
         });
       } else {
+        await db.Markdown.create({
+          contentHTML: data.contentHTML,
+          contentMarkdown: data.contentMarkdown,
+          description: data.description,
+          clinicId: data.id,
+        });
+
         await db.Hospital.create({
           id: data.id,
           name: data.name,
@@ -169,7 +176,14 @@ let getInfoHospitalByIdService = (inputId, location) => {
         let data = await db.Hospital.findOne({
           where: { id: inputId },
           // attributes: ["descriptionHTML", "descriptionMarkdown"],
+          include: [
+            {
+              model: db.Markdown,
+              attributes: ["description", "contentHTML", "contentMarkdown"],
+            },
+          ],
         });
+
         if (data) {
           data.image = Buffer.from(data.image, "base64").toString("binary");
         }

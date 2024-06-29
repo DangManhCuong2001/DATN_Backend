@@ -27,7 +27,23 @@ let handleCreateNewSpecialty = async (req, res) => {
   }
 };
 
+let handleGetListSpecialtybyHospital = async (req, res) => {
+  try {
+    let info = await SpecialtyService.getListSpecialtybyHospitalService(
+      req.query.hospitalId
+    );
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log("Get errrrr", e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Error from server",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllSpecialty: handleGetAllSpecialty,
   handleCreateNewSpecialty: handleCreateNewSpecialty,
+  handleGetListSpecialtybyHospital: handleGetListSpecialtybyHospital,
 };
