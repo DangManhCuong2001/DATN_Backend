@@ -32,6 +32,8 @@ let initWebRoutes = (app) => {
     "/api/get-list-doctor-by-hospital",
     DoctorsController.handleListDoctorByHospital
   );
+  router.post("/api/done-appointment", DoctorsController.handleDoneAppointment);
+
   //Specialty
   router.get(
     "/api/get-all-specialty",
@@ -98,13 +100,22 @@ let initWebRoutes = (app) => {
     PatientController.handleGetAppointmentsPatient
   );
 
-  router.post("/api/done-appointment", DoctorsController.handleDoneAppointment);
   router.post("/api/save-rate-point", PatientController.handleSaveRatePoint);
   router.get(
     "/api/get-list-rate-point",
     PatientController.handleGetListRatePoint
   );
   router.get("/api/search-data", PatientController.handleSearchData);
+  router.get("/api/get-statistical", PatientController.handleGetstatistical);
+  router.get(
+    "/api/get-statistical-hospital-chart",
+    PatientController.handleGetstatisticalHospitalChart
+  );
+
+  router.get(
+    "/api/get-statistical-appointment-chart",
+    PatientController.handleGetstatisticalAppointmentChart
+  );
 
   // router.get(
   //   "/auth/google",

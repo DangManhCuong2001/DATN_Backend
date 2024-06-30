@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Hospital.hasOne(models.Markdown, { foreignKey: "clinicId" });
       Hospital.hasMany(models.Doctor_Info, { foreignKey: "clinicId" });
+      Hospital.hasMany(models.Booking, { foreignKey: "hospitalId" });
       // Hospital.belongsToMany(models.Specialty, {
       //   through: HospitalSpecialty,
       //   foreignKey: "hospitalId",

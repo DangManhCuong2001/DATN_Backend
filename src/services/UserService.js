@@ -97,6 +97,14 @@ let getUsers = (userId) => {
           where: { id: userId },
         });
       }
+      if (users) {
+        users.map((item) => {
+          if (item.image) {
+            item.image = Buffer.from(item.image, "base64").toString("binary");
+            return item;
+          }
+        });
+      }
       resolve(users);
     } catch (e) {
       reject(e);
@@ -172,7 +180,12 @@ let updateUserData = (data) => {
         where: { id: data.id },
         raw: false,
       });
+
       if (user) {
+        if (data.password) {
+          let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+          user.password = hashPasswordFromBcrypt;
+        }
         user.email = data.email;
         user.firstName = data.firstName;
         user.lastName = data.lastName;

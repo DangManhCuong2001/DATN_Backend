@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 require("dotenv").config();
 import emailSerService from "./emailService";
@@ -284,6 +284,94 @@ let searchDataService = (keyword) => {
   });
 };
 
+let getStatisticalService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let totalAppointment = await db.Booking.count();
+      let totalHospital = await db.Hospital.count();
+      let totalSpecialty = await db.Specialty.count();
+      let totalDoctor = await db.Doctor_Info.count();
+      resolve({
+        errCode: 0,
+        data: { totalAppointment, totalHospital, totalSpecialty, totalDoctor },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let getStatisticalHospitalChartService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let totalAppointment = await db.Booking.count({
+        where: { statusId: "S3" },
+      });
+      let totalAppByHospital = await db.Booking.findAll({
+        where: { statusId: "S3" },
+        attributes: [
+          "hospitalId",
+          [
+            Sequelize.fn("COUNT", Sequelize.col("Booking.id")),
+            "appointmentCount",
+          ],
+        ],
+        include: [{ model: db.Hospital, attributes: ["name"] }],
+        group: "hospitalId",
+      });
+      // let totalSpecialty = await db.Specialty.count();
+      // let totalDoctor = await db.Doctor_Info.count();
+      resolve({
+        errCode: 0,
+        data: { totalAppointment, totalAppByHospital },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let getStatisticalAppointmentChartService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let totalAppointment = await db.Booking.count();
+      let totalAppByStatusS1 = await db.Booking.count({
+        where: { statusId: "S1" },
+      });
+      let totalAppByStatusS2 = await db.Booking.count({
+        where: { statusId: "S2" },
+      });
+      let totalAppByStatusS3 = await db.Booking.count({
+        where: { statusId: "S3" },
+      });
+      // let totalSpecialty = await db.Specialty.count();
+      // let totalDoctor = await db.Doctor_Info.count();
+      resolve({
+        errCode: 0,
+        data: {
+          totalAppointment,
+          dataByStatus: [
+            {
+              totalAppByStatus: totalAppByStatusS1,
+              name: "Lượt đặt khám chờ xác nhận",
+            },
+            {
+              totalAppByStatus: totalAppByStatusS2,
+              name: "Lượt đặt khám chờ khám",
+            },
+            {
+              totalAppByStatus: totalAppByStatusS3,
+              name: "Lượt đặt khám đã hoàn thành",
+            },
+          ],
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   bookAppointment: bookAppointment,
   getListPatientBooking: getListPatientBooking,
@@ -292,4 +380,7 @@ module.exports = {
   saveRatePointService: saveRatePointService,
   getListRatePointServices: getListRatePointServices,
   searchDataService: searchDataService,
+  getStatisticalService: getStatisticalService,
+  getStatisticalHospitalChartService: getStatisticalHospitalChartService,
+  getStatisticalAppointmentChartService: getStatisticalAppointmentChartService,
 };

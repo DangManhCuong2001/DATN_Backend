@@ -103,6 +103,44 @@ let handleSearchData = async (req, res) => {
   }
 };
 
+let handleGetstatistical = async (req, res) => {
+  try {
+    let info = await PatientService.getStatisticalService();
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
+let handleGetstatisticalHospitalChart = async (req, res) => {
+  try {
+    let info = await PatientService.getStatisticalHospitalChartService();
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
+let handleGetstatisticalAppointmentChart = async (req, res) => {
+  try {
+    let info = await PatientService.getStatisticalAppointmentChartService();
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
 module.exports = {
   handleBookAppointment: handleBookAppointment,
   handleGetListPatientForDoctor: handleGetListPatientForDoctor,
@@ -111,4 +149,7 @@ module.exports = {
   handleSaveRatePoint: handleSaveRatePoint,
   handleGetListRatePoint: handleGetListRatePoint,
   handleSearchData: handleSearchData,
+  handleGetstatistical: handleGetstatistical,
+  handleGetstatisticalHospitalChart: handleGetstatisticalHospitalChart,
+  handleGetstatisticalAppointmentChart: handleGetstatisticalAppointmentChart,
 };
