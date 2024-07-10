@@ -2,6 +2,7 @@ import { Op, where } from "sequelize";
 import db, { Sequelize, sequelize } from "../models/index";
 require("dotenv").config();
 import emailSerService from "./emailService";
+const moment = require("moment");
 
 let bookAppointment = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -372,6 +373,54 @@ let getStatisticalAppointmentChartService = () => {
   });
 };
 
+let getAppointmentIn7DayService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Lấy ngày hiện tại và 7 ngày trước
+      const today = moment().endOf("day").toDate();
+      const sevenDaysAgo = moment().subtract(7, "days").startOf("day").toDate();
+
+      // Lấy dữ liệu trong 7 ngày gần nhất
+      const recentData = await db.Booking.findAll({
+        where: {
+          createdAt: {
+            [Op.between]: [sevenDaysAgo, today],
+          },
+        },
+        attributes: ["createdAt"],
+        order: [["createdAt", "DESC"]],
+      });
+
+      // Đếm số lượng bản ghi theo từng ngày
+      const countPerDay = new Map();
+      recentData.forEach((record) => {
+        const dateStr = moment(record.createdAt).format("MM-DD"); // chỉ lấy ngày và tháng
+        if (moment(dateStr, "MM-DD", true).isValid()) {
+          const count = countPerDay.get(dateStr) || 0;
+          countPerDay.set(dateStr, count + 1);
+        } else {
+          console.error(`Invalid date: ${record.createdAt}`);
+        }
+      });
+
+      // Tạo danh sách tất cả các ngày trong khoảng thời gian 7 ngày gần nhất
+      const allDates = [];
+      for (let m = moment(sevenDaysAgo); m.isBefore(today); m.add(1, "days")) {
+        const dateStr = m.format("MM-DD");
+        const count = countPerDay.get(dateStr) || 0;
+        allDates.push({ date: dateStr, count });
+      }
+
+      resolve({
+        errCode: 0,
+        data: allDates,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   bookAppointment: bookAppointment,
   getListPatientBooking: getListPatientBooking,
@@ -383,4 +432,5 @@ module.exports = {
   getStatisticalService: getStatisticalService,
   getStatisticalHospitalChartService: getStatisticalHospitalChartService,
   getStatisticalAppointmentChartService: getStatisticalAppointmentChartService,
+  getAppointmentIn7DayService: getAppointmentIn7DayService,
 };

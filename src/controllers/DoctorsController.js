@@ -57,7 +57,8 @@ let handleGetProfileDoctor = async (req, res) => {
 let handleListDoctorByHospital = async (req, res) => {
   try {
     let info = await doctorService.getListDoctorByHospitalService(
-      req.query.hospitalId
+      req.query.hospitalId,
+      req.query.specialtyId
     );
     return res.status(200).json(info);
   } catch (e) {

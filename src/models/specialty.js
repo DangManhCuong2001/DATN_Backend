@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       id: { type: DataTypes.STRING, primaryKey: true },
       name: DataTypes.STRING,
-      descriptionHTML: DataTypes.TEXT,
-      descriptionMarkdown: DataTypes.TEXT,
+      // descriptionHTML: DataTypes.TEXT,
+      // descriptionMarkdown: DataTypes.TEXT,
       image: DataTypes.STRING,
     },
     {

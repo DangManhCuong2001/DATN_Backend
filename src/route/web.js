@@ -117,6 +117,11 @@ let initWebRoutes = (app) => {
     PatientController.handleGetstatisticalAppointmentChart
   );
 
+  router.get(
+    "/api/get-appointment-in-7-day",
+    PatientController.handleGetAppointmentIn7Day
+  );
+
   // router.get(
   //   "/auth/google",
   //   passport.authenticate("google", { scope: ["profile"] })

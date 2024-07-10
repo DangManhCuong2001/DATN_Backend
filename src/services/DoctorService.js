@@ -108,6 +108,7 @@ let saveInfoDoctorsService = (inputData) => {
             // nameClinic: inputData.nameClinic,
             // addressClinic: inputData.addressClinic,
             note: inputData.note,
+
             specialtyId: inputData.specialtySelected,
             clinicId: inputData.hospitalSelected,
           });
@@ -187,10 +188,10 @@ let getInfoDoctorService = (inputId) => {
   });
 };
 
-let getListDoctorByHospitalService = (hospitalId) => {
+let getListDoctorByHospitalService = (hospitalId, specialtyId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!hospitalId) {
+      if (!hospitalId || !specialtyId) {
         resolve({
           errCode: 1,
           errMessage: "Missing parameter!",
@@ -199,6 +200,7 @@ let getListDoctorByHospitalService = (hospitalId) => {
         let data = await db.Doctor_Info.findAll({
           where: {
             clinicId: hospitalId,
+            specialtyId: specialtyId,
           },
           attributes: {
             exclude: ["id"],
