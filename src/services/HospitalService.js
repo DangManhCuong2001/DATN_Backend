@@ -90,6 +90,7 @@ let updateHospitalService = (data) => {
         hospital.name = data.name;
         hospital.type = data.type;
         hospital.address = data.address;
+        hospital.image = data.image;
         hospital.descriptionHTML = data.descriptionHTML;
         hospital.descriptionMarkdown = data.descriptionMarkdown;
         await hospital.save();

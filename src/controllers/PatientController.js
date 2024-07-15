@@ -154,6 +154,22 @@ let handleGetAppointmentIn7Day = async (req, res) => {
     });
   }
 };
+
+let handleCancelAppointment = async (req, res) => {
+  try {
+    let info = await PatientService.CancelAppointmentService(
+      req.body.appointmentId
+    );
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
 module.exports = {
   handleBookAppointment: handleBookAppointment,
   handleGetListPatientForDoctor: handleGetListPatientForDoctor,
@@ -166,4 +182,5 @@ module.exports = {
   handleGetstatisticalHospitalChart: handleGetstatisticalHospitalChart,
   handleGetstatisticalAppointmentChart: handleGetstatisticalAppointmentChart,
   handleGetAppointmentIn7Day: handleGetAppointmentIn7Day,
+  handleCancelAppointment: handleCancelAppointment,
 };

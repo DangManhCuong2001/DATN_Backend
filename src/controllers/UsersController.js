@@ -44,7 +44,7 @@ let handleCreateNewUser = async (req, res) => {
 };
 
 let handleDeleteUser = async (req, res) => {
-  console.log("dataaa", req.body);
+  // console.log("dataaa", req.body);
 
   if (!req.body.id) {
     return res.status(200).json({

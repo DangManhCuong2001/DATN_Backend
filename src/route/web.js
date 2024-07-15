@@ -121,6 +121,10 @@ let initWebRoutes = (app) => {
     "/api/get-appointment-in-7-day",
     PatientController.handleGetAppointmentIn7Day
   );
+  router.delete(
+    "/api/cancel-appoinment",
+    PatientController.handleCancelAppointment
+  );
 
   // router.get(
   //   "/auth/google",

@@ -421,6 +421,32 @@ let getAppointmentIn7DayService = () => {
   });
 };
 
+let CancelAppointmentService = (appointmentID) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let app = await db.Booking.findOne({
+        where: { id: appointmentID },
+      });
+      if (!app) {
+        resolve({
+          errCode: 2,
+          errMessage: `Lịch hẹn không tồn tại`,
+        });
+      }
+      await db.Booking.destroy({
+        where: { id: appointmentID },
+      });
+
+      resolve({
+        errCode: 0,
+        message: "Huy thanh cong",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   bookAppointment: bookAppointment,
   getListPatientBooking: getListPatientBooking,
@@ -433,4 +459,5 @@ module.exports = {
   getStatisticalHospitalChartService: getStatisticalHospitalChartService,
   getStatisticalAppointmentChartService: getStatisticalAppointmentChartService,
   getAppointmentIn7DayService: getAppointmentIn7DayService,
+  CancelAppointmentService: CancelAppointmentService,
 };
