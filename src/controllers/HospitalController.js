@@ -75,6 +75,21 @@ let handleGetInfoHospitalById = async (req, res) => {
   }
 };
 
+let handleDeleteHospital = async (req, res) => {
+  // console.log("dataaa", req.body);
+
+  if (!req.body.id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Missing parameters!",
+    });
+  }
+
+  let message = await HospitalService.deleteHospitalService(req.body.id);
+
+  return res.status(200).json(message);
+};
+
 module.exports = {
   handleCreateNewHospital: handleCreateNewHospital,
   handleGetAllHospital: handleGetAllHospital,
@@ -83,4 +98,5 @@ module.exports = {
   handleEditHospital: handleEditHospital,
   handleGetHospitalWithType: handleGetHospitalWithType,
   handleGetInfoHospitalById: handleGetInfoHospitalById,
+  handleDeleteHospital: handleDeleteHospital,
 };

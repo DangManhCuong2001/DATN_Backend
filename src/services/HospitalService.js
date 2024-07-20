@@ -201,6 +201,27 @@ let getInfoHospitalByIdService = (inputId, location) => {
   });
 };
 
+let deleteHospitalService = (hospitalId) => {
+  return new Promise(async (resolve, reject) => {
+    let hospital = await db.Hospital.findOne({
+      where: { id: hospitalId },
+    });
+    if (!hospital) {
+      resolve({
+        errCode: 2,
+        errMessage: `Hospital not found`,
+      });
+    }
+    await db.Hospital.destroy({
+      where: { id: hospitalId },
+    });
+    resolve({
+      errCode: 0,
+      message: `Delete success`,
+    });
+  });
+};
+
 module.exports = {
   createNewHospitalService: createNewHospitalService,
   getAllHospitalService: getAllHospitalService,
@@ -209,4 +230,5 @@ module.exports = {
   updateHospitalService: updateHospitalService,
   getHospitalWithTypeService: getHospitalWithTypeService,
   getInfoHospitalByIdService: getInfoHospitalByIdService,
+  deleteHospitalService: deleteHospitalService,
 };

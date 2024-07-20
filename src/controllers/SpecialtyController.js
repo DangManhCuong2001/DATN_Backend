@@ -42,8 +42,30 @@ let handleGetListSpecialtybyHospital = async (req, res) => {
   }
 };
 
+let handleEditSpecialty = async (req, res) => {
+  let data = req.body;
+  let message = await SpecialtyService.editSpecialtyService(data);
+  return res.status(200).json(message);
+};
+
+let handleDeleteSpecialty = async (req, res) => {
+  // console.log("dataaa", req.body);
+
+  if (!req.body.id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Missing parameters!",
+    });
+  }
+
+  let message = await SpecialtyService.deleteSpecialtyService(req.body.id);
+
+  return res.status(200).json(message);
+};
 module.exports = {
   handleGetAllSpecialty: handleGetAllSpecialty,
   handleCreateNewSpecialty: handleCreateNewSpecialty,
   handleGetListSpecialtybyHospital: handleGetListSpecialtybyHospital,
+  handleEditSpecialty: handleEditSpecialty,
+  handleDeleteSpecialty: handleDeleteSpecialty,
 };

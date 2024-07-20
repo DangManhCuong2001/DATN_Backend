@@ -170,6 +170,18 @@ let handleCancelAppointment = async (req, res) => {
   }
 };
 
+let handleEditProfile = async (req, res) => {
+  let data = req.body;
+  let message = await PatientService.EditProfileService(data);
+  return res.status(200).json(message);
+};
+
+let handleEditPassword = async (req, res) => {
+  let data = req.body;
+  let message = await PatientService.EditPasswordService(data);
+  return res.status(200).json(message);
+};
+
 module.exports = {
   handleBookAppointment: handleBookAppointment,
   handleGetListPatientForDoctor: handleGetListPatientForDoctor,
@@ -183,4 +195,6 @@ module.exports = {
   handleGetstatisticalAppointmentChart: handleGetstatisticalAppointmentChart,
   handleGetAppointmentIn7Day: handleGetAppointmentIn7Day,
   handleCancelAppointment: handleCancelAppointment,
+  handleEditProfile: handleEditProfile,
+  handleEditPassword: handleEditPassword,
 };

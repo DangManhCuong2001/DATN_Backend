@@ -7,7 +7,6 @@ import DoctorsController from "../controllers/DoctorsController";
 import SpecialtyController from "../controllers/SpecialtyController";
 import HospitalController from "../controllers/HospitalController";
 import PatientController from "../controllers/PatientController";
-import HospitalSpecialtyDoctor from "../controllers/hospital-specialty-doctorController";
 
 let router = express.Router();
 
@@ -49,6 +48,12 @@ let initWebRoutes = (app) => {
     SpecialtyController.handleGetListSpecialtybyHospital
   );
 
+  router.put("/api/edit-specialty", SpecialtyController.handleEditSpecialty);
+  router.delete(
+    "/api/delete-specialty",
+    SpecialtyController.handleDeleteSpecialty
+  );
+
   //Hospital
   router.post(
     "/api/create-new-hospital",
@@ -65,10 +70,13 @@ let initWebRoutes = (app) => {
     HospitalController.handleGetInfoHospitalById
   );
 
-  router.get("/api/get-test", HospitalSpecialtyDoctor.handleGetTest);
   router.get(
     "/api/get-hospital-with-type",
     HospitalController.handleGetHospitalWithType
+  );
+  router.delete(
+    "/api/delete-hospital",
+    HospitalController.handleDeleteHospital
   );
 
   //Schedule
@@ -125,7 +133,8 @@ let initWebRoutes = (app) => {
     "/api/cancel-appoinment",
     PatientController.handleCancelAppointment
   );
-
+  router.put("/api/edit-profile", PatientController.handleEditProfile);
+  router.put("/api/edit-password", PatientController.handleEditPassword);
   // router.get(
   //   "/auth/google",
   //   passport.authenticate("google", { scope: ["profile"] })

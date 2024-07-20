@@ -3,6 +3,7 @@ import db, { Sequelize, sequelize } from "../models/index";
 require("dotenv").config();
 import emailSerService from "./emailService";
 const moment = require("moment");
+import bcrypt from "bcryptjs";
 
 let bookAppointment = (data) => {
   return new Promise(async (resolve, reject) => {
@@ -59,7 +60,7 @@ let getListPatientBooking = (doctorId, date) => {
       } else {
         let data = await db.Booking.findAll({
           where: {
-            statusId: "S2",
+            [Op.or]: [{ statusId: "S2" }, { statusId: "S3" }],
             doctorId: doctorId,
             date: date,
           },
@@ -447,6 +448,128 @@ let CancelAppointmentService = (appointmentID) => {
   });
 };
 
+let EditProfileService = (data) => {
+  return new Promise(async (resolve, reject) => {
+    console.log(data);
+    try {
+      if (
+        !data.id ||
+        !data.firstName ||
+        !data.lastName ||
+        !data.address ||
+        !data.phoneNumber ||
+        !data.gender ||
+        !data.image
+      ) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing parameter",
+        });
+      }
+      let user = await db.User.findOne({
+        where: { id: data.id },
+
+        raw: false,
+      });
+
+      if (user) {
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.address = data.address;
+        user.phoneNumber = data.phoneNumber;
+        user.gender = data.gender;
+        user.image = data.image;
+        await user.save();
+        resolve({
+          errCode: 0,
+          message: "Update success",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "User not found",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const salt = bcrypt.genSaltSync(10);
+let hashUserPassword = (password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let hashPassword = bcrypt.hashSync(password, salt);
+      resolve(hashPassword);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let EditPasswordService = (data) => {
+  return new Promise(async (resolve, reject) => {
+    console.log(data);
+    try {
+      if (
+        !data.id ||
+        !data.oldPassword ||
+        !data.newPassword ||
+        !data.reNewPassword
+      ) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing parameter",
+        });
+      }
+      let user = await db.User.findOne({
+        where: { id: data.id },
+
+        raw: false,
+      });
+
+      if (user) {
+        let hashNewPasswordFromBcrypt = await hashUserPassword(
+          data.newPassword
+        );
+
+        console.log(
+          "dfsdfds",
+          bcrypt.compareSync(data.oldPassword, user.password),
+          hashNewPasswordFromBcrypt
+        );
+        if (!bcrypt.compareSync(data.oldPassword, user.password)) {
+          resolve({
+            errCode: 3,
+            errMessage: "incorrect password",
+          });
+        }
+        if (data.newPassword !== data.reNewPassword) {
+          resolve({
+            errCode: 4,
+            errMessage: "incorrect reNewPassword",
+          });
+        } else {
+          user.password = hashNewPasswordFromBcrypt;
+          await user.save();
+          resolve({
+            errCode: 0,
+            message: "Update success",
+          });
+        }
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "User not found",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   bookAppointment: bookAppointment,
   getListPatientBooking: getListPatientBooking,
@@ -460,4 +583,6 @@ module.exports = {
   getStatisticalAppointmentChartService: getStatisticalAppointmentChartService,
   getAppointmentIn7DayService: getAppointmentIn7DayService,
   CancelAppointmentService: CancelAppointmentService,
+  EditProfileService: EditProfileService,
+  EditPasswordService: EditPasswordService,
 };

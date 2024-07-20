@@ -97,8 +97,68 @@ let getListSpecialtybyHospitalService = (hospitalId) => {
   });
 };
 
+let editSpecialtyService = (data) => {
+  return new Promise(async (resolve, reject) => {
+    console.log(data);
+    try {
+      if (!data.id || !data.image || !data.name) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing parameter",
+        });
+      }
+      let specialty = await db.Specialty.findOne({
+        where: { id: data.id },
+
+        raw: false,
+      });
+
+      if (specialty) {
+        specialty.image = data.image;
+        specialty.name = data.name;
+
+        await specialty.save();
+        resolve({
+          errCode: 0,
+          message: "Update success",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "User not found",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let deleteSpecialtyService = (specialtyId) => {
+  return new Promise(async (resolve, reject) => {
+    let specialty = await db.Specialty.findOne({
+      where: { id: specialtyId },
+    });
+    if (!specialty) {
+      resolve({
+        errCode: 2,
+        errMessage: `Specialty not found`,
+      });
+    }
+    await db.Specialty.destroy({
+      where: { id: specialtyId },
+    });
+    resolve({
+      errCode: 0,
+      message: `Delete success`,
+    });
+  });
+};
+
 module.exports = {
   getAllSpecialtyService: getAllSpecialtyService,
   createNewSpecialtyService: createNewSpecialtyService,
   getListSpecialtybyHospitalService: getListSpecialtybyHospitalService,
+  editSpecialtyService: editSpecialtyService,
+  deleteSpecialtyService: deleteSpecialtyService,
 };
