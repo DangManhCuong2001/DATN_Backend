@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Booking.belongsTo(models.Allcode, { foreignKey: "timeType" });
+      // Booking.belongsTo(models.Allcode, { foreignKey: "timeType" });
       Booking.belongsTo(models.User, { foreignKey: "doctorId" });
       Booking.hasOne(models.RatePoint, { foreignKey: "appointmentId" });
       Booking.belongsTo(models.Hospital, { foreignKey: "hospitalId" });

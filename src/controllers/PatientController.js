@@ -182,6 +182,23 @@ let handleEditPassword = async (req, res) => {
   return res.status(200).json(message);
 };
 
+let handleSearchHospital = async (req, res) => {
+  console.log(req.query);
+  try {
+    let info = await PatientService.searchHospitalService(
+      req.query.keyword,
+      req.query.typeHospital
+    );
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      message: "Error from server...",
+    });
+  }
+};
+
 module.exports = {
   handleBookAppointment: handleBookAppointment,
   handleGetListPatientForDoctor: handleGetListPatientForDoctor,
@@ -197,4 +214,5 @@ module.exports = {
   handleCancelAppointment: handleCancelAppointment,
   handleEditProfile: handleEditProfile,
   handleEditPassword: handleEditPassword,
+  handleSearchHospital: handleSearchHospital,
 };

@@ -570,6 +570,40 @@ let EditPasswordService = (data) => {
   });
 };
 
+let searchHospitalService = (keyword, typeHospital) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!keyword || !typeHospital) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing parameter",
+        });
+      } else {
+        let data = await db.Hospital.findAll({
+          where: {
+            type: typeHospital,
+            [Op.or]: [{ name: { [Op.like]: "%" + keyword + "%" } }],
+          },
+        });
+        if (data) {
+          data.map((item) => {
+            if (item.image) {
+              item.image = Buffer.from(item.image, "base64").toString("binary");
+              return item;
+            }
+          });
+        }
+        resolve({
+          errCode: 0,
+          listHospital: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   bookAppointment: bookAppointment,
   getListPatientBooking: getListPatientBooking,
@@ -585,4 +619,5 @@ module.exports = {
   CancelAppointmentService: CancelAppointmentService,
   EditProfileService: EditProfileService,
   EditPasswordService: EditPasswordService,
+  searchHospitalService: searchHospitalService,
 };

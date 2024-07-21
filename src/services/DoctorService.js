@@ -144,11 +144,6 @@ let getInfoDoctorService = (inputId) => {
               model: db.Markdown,
               attributes: ["description", "contentHTML", "contentMarkdown"],
             },
-            // {
-            //   model: db.Allcode,
-            //   as: "positionData",
-            //   attributes: ["valueVi"],
-            // },
             {
               model: db.Doctor_Info,
               attributes: {
@@ -305,13 +300,13 @@ let getScheduleDoctorsServices = (doctorId, date) => {
             doctorId: doctorId,
             date: date,
           },
-          include: [
-            {
-              model: db.Allcode,
-              // as: "timeTypeData",
-              attributes: ["value"],
-            },
-          ],
+          // include: [
+          //   {
+          //     model: db.Allcode,
+          //     // as: "timeTypeData",
+          //     attributes: ["value"],
+          //   },
+          // ],
           raw: false,
           nest: true,
         });

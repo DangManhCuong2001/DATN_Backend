@@ -20,7 +20,7 @@ let initWebRoutes = (app) => {
   router.put("/api/edit-user", UsersController.handleEditUser);
   router.delete("/api/delete-user", UsersController.handleDeleteUser);
 
-  router.get("/api/allcode", UsersController.handleGetAllCode);
+  // router.get("/api/allcode", UsersController.handleGetAllCode);
 
   //DOctor
   router.get("/api/get-all-doctors", DoctorsController.handleGetAllDoctors);
@@ -135,6 +135,9 @@ let initWebRoutes = (app) => {
   );
   router.put("/api/edit-profile", PatientController.handleEditProfile);
   router.put("/api/edit-password", PatientController.handleEditPassword);
+
+  router.get("/api/search-hospital", PatientController.handleSearchHospital);
+
   // router.get(
   //   "/auth/google",
   //   passport.authenticate("google", { scope: ["profile"] })

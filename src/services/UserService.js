@@ -218,26 +218,26 @@ let updateUserData = (data) => {
   });
 };
 
-let getAllCodeServive = (typeInput) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (!typeInput) {
-        resolve({
-          errCode: 1,
-          errMessage: "Missing parameter!",
-        });
-      }
-      let res = {};
-      let allcode = await db.Allcode.findAll({
-        where: { type: typeInput },
-      });
-      res.errCode = 0;
-      resolve(allcode);
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
+// let getAllCodeServive = (typeInput) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       if (!typeInput) {
+//         resolve({
+//           errCode: 1,
+//           errMessage: "Missing parameter!",
+//         });
+//       }
+//       let res = {};
+//       let allcode = await db.Allcode.findAll({
+//         where: { type: typeInput },
+//       });
+//       res.errCode = 0;
+//       resolve(allcode);
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+// };
 
 module.exports = {
   handleUserlogin: handleUserlogin,
@@ -245,5 +245,5 @@ module.exports = {
   createNewUser: createNewUser,
   updateUserData: updateUserData,
   deleteUser: deleteUser,
-  getAllCodeServive: getAllCodeServive,
+  // getAllCodeServive: getAllCodeServive,
 };
