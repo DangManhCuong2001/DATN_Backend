@@ -20,12 +20,12 @@ let bookAppointment = (data) => {
           patientName: data.fullName,
           time: data.timeString,
           doctorName: data.fullNameDoctor,
-          linkConfirm: `${process.env.URL_REACT}/verify-booking?token=${data.id}&doctorId=${data.doctorSelected}`,
+          linkConfirm: `${process.env.URL_REACT}/verify-booking?token=${data.id}`,
         });
         await db.Booking.create({
           id: data.id,
           statusId: "S1",
-          doctorId: data.doctorSelected,
+          doctorId: data.doctorInfoId,
           hospitalId: data.hospitalSelected,
           patientId: data.patientId,
           date: data.daySelected,
@@ -60,7 +60,7 @@ let getListPatientBooking = (doctorId, date) => {
       } else {
         let data = await db.Booking.findAll({
           where: {
-            [Op.or]: [{ statusId: "S2" }, { statusId: "S3" }],
+            // [Op.or]: [{ statusId: "S2" }, { statusId: "S3" }],
             doctorId: doctorId,
             date: date,
           },
@@ -79,7 +79,7 @@ let getListPatientBooking = (doctorId, date) => {
 let verifyBookAppointment = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!data.token || !data.doctorId) {
+      if (!data.token) {
         resolve({
           errCode: 1,
           errMessage: "Missing parameter",
@@ -88,7 +88,7 @@ let verifyBookAppointment = (data) => {
         const appoinment = await db.Booking.findOne({
           where: {
             id: data.token,
-            doctorId: data.doctorId,
+            // doctorId: data.doctorId,
             statusId: "S1",
           },
           raw: false,
@@ -129,7 +129,16 @@ let getAppointmentsPatientServices = (userId) => {
             patientId: userId,
           },
           include: [
-            { model: db.User, attributes: ["firstName", "lastName"] },
+            {
+              model: db.Doctor_Info,
+              attributes: ["id"],
+              include: [
+                {
+                  model: db.User,
+                  attributes: ["firstName", "lastName"],
+                },
+              ],
+            },
             { model: db.RatePoint, attributes: ["point"] },
           ],
         });
@@ -198,16 +207,32 @@ let getListRatePointServices = (doctorId) => {
           errMessage: "Missing parameter",
         });
       } else {
-        let data = await db.RatePoint.findAll({
+        // let data = await db.RatePoint.findAll({
+        //   where: {
+        //     doctorId: doctorId,
+        //   },
+        //   include: [
+        //     { model: db.User, attributes: ["firstName", "lastName", "image"] },
+        //   ],
+        // });
+        let data = await db.Doctor_Info.findOne({
           where: {
             doctorId: doctorId,
           },
           include: [
-            { model: db.User, attributes: ["firstName", "lastName", "image"] },
+            {
+              model: db.RatePoint,
+              include: [
+                {
+                  model: db.User,
+                  attributes: ["firstName", "lastName", "image"],
+                },
+              ],
+            },
           ],
         });
         if (data) {
-          data.map((item) => {
+          data.RatePoints.map((item) => {
             if (item.User.image) {
               item.User.image = Buffer.from(item.User.image, "base64").toString(
                 "binary"
@@ -573,7 +598,7 @@ let EditPasswordService = (data) => {
 let searchHospitalService = (keyword, typeHospital) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!keyword || !typeHospital) {
+      if (!typeHospital) {
         resolve({
           errCode: 1,
           errMessage: "Missing parameter",

@@ -34,11 +34,13 @@ let createNewHospitalService = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (
+        !data.image ||
         !data.name ||
-        !data.image
-        // ||
-        // !data.descriptionHTML ||
-        // !data.descriptionMarkdown
+        !data.type ||
+        !data.address ||
+        !data.contentHTML ||
+        !data.contentMarkdown ||
+        !data.description
       ) {
         resolve({
           errCode: 1,
@@ -58,8 +60,8 @@ let createNewHospitalService = (data) => {
           type: data.type,
           image: data.image,
           address: data.address,
-          descriptionHTML: data.descriptionHTML,
-          descriptionMarkdown: data.descriptionMarkdown,
+          // descriptionHTML: data.descriptionHTML,
+          // descriptionMarkdown: data.descriptionMarkdown,
         });
         resolve({
           errCode: 0,
@@ -75,9 +77,15 @@ let createNewHospitalService = (data) => {
 let updateHospitalService = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!data.id) {
+      if (
+        !data.id ||
+        !data.image ||
+        !data.name ||
+        !data.type ||
+        !data.address
+      ) {
         resolve({
-          errCode: 2,
+          errCode: 1,
           errMessage: "Missing parameter",
         });
       }
@@ -91,16 +99,17 @@ let updateHospitalService = (data) => {
         hospital.type = data.type;
         hospital.address = data.address;
         hospital.image = data.image;
-        hospital.descriptionHTML = data.descriptionHTML;
-        hospital.descriptionMarkdown = data.descriptionMarkdown;
+        // hospital.descriptionHTML = data.descriptionHTML;
+        // hospital.descriptionMarkdown = data.descriptionMarkdown;
         await hospital.save();
         resolve({
           errCode: 0,
           message: "Update success",
         });
+        
       } else {
         resolve({
-          errCode: 1,
+          errCode: 2,
           errMessage: "hospital not found",
         });
       }

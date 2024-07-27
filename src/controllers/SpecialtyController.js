@@ -62,10 +62,25 @@ let handleDeleteSpecialty = async (req, res) => {
 
   return res.status(200).json(message);
 };
+
+let handleGetTest = async (req, res) => {
+  try {
+    let info = await SpecialtyService.getTestService(req.query.testId);
+    return res.status(200).json(info);
+  } catch (e) {
+    console.log("Get errrrr", e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Error from server",
+    });
+  }
+};
+
 module.exports = {
   handleGetAllSpecialty: handleGetAllSpecialty,
   handleCreateNewSpecialty: handleCreateNewSpecialty,
   handleGetListSpecialtybyHospital: handleGetListSpecialtybyHospital,
   handleEditSpecialty: handleEditSpecialty,
   handleDeleteSpecialty: handleDeleteSpecialty,
+  handleGetTest: handleGetTest,
 };

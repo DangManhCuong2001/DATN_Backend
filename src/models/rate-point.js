@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       RatePoint.belongsTo(models.Booking, { foreignKey: "appointmentId" });
       RatePoint.belongsTo(models.User, { foreignKey: "userId" });
+      RatePoint.belongsTo(models.Doctor_Info, { foreignKey: "doctorId" });
     }
   }
   RatePoint.init(

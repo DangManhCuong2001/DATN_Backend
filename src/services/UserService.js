@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { includes } from "lodash";
 const db = require("../models");
 
 const salt = bcrypt.genSaltSync(10);
@@ -20,6 +21,8 @@ let checkUserEmail = (userEmail) => {
         where: { email: userEmail },
       });
       if (user) {
+        console.log("user", user);
+
         resolve(true);
       } else {
         resolve(false);
@@ -50,6 +53,7 @@ let handleUserlogin = (email, password) => {
             "address",
           ],
           where: { email: email },
+          include: [{ model: db.Doctor_Info, attributes: ["id"] }],
           raw: true,
         });
         if (user) {
@@ -116,30 +120,49 @@ let createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
       let check = await checkUserEmail(data.email);
-      if (check === true) {
+      console.log(check);
+      if (
+        !data.email ||
+        !data.password ||
+        !data.id ||
+        !data.firstName ||
+        !data.address ||
+        !data.lastName ||
+        !data.phoneNumber ||
+        !data.gender ||
+        !data.image
+      ) {
         resolve({
-          errCode: 1,
-          message: "Email da duoc su dung, vui long thu email khac",
+          errCode: 2,
+          message: "missing parameter",
         });
+      } else {
+        if (check === true) {
+          resolve({
+            errCode: 1,
+            message: "Email da duoc su dung, vui long thu email khac",
+          });
+        } else {
+          let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+          await db.User.create({
+            id: data.id,
+            email: data.email,
+            password: hashPasswordFromBcrypt,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: data.address,
+            phoneNumber: data.phoneNumber,
+            gender: data.gender,
+            roleId: data.roleId,
+            // positionId: data.positionId,
+            image: data.image,
+          });
+          resolve({
+            errCode: 0,
+            message: "ok",
+          });
+        }
       }
-      let hashPasswordFromBcrypt = await hashUserPassword(data.password);
-      await db.User.create({
-        id: data.id,
-        email: data.email,
-        password: hashPasswordFromBcrypt,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        address: data.address,
-        phoneNumber: data.phoneNumber,
-        gender: data.gender,
-        roleId: data.roleId,
-        positionId: data.positionId,
-        image: data.image,
-      });
-      resolve({
-        errCode: 0,
-        message: "ok",
-      });
     } catch (e) {
       reject(e);
     }

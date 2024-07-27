@@ -138,6 +138,8 @@ let initWebRoutes = (app) => {
 
   router.get("/api/search-hospital", PatientController.handleSearchHospital);
 
+  router.get("/api/get-test", SpecialtyController.handleGetTest);
+
   // router.get(
   //   "/auth/google",
   //   passport.authenticate("google", { scope: ["profile"] })

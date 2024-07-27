@@ -9,6 +9,12 @@ let getAllDoctors = () => {
         attributes: {
           exclude: ["password", "image"],
         },
+        include: [
+          {
+            model: db.Doctor_Info,
+            attributes: ["id"],
+          },
+        ],
       });
 
       resolve({
@@ -146,9 +152,6 @@ let getInfoDoctorService = (inputId) => {
             },
             {
               model: db.Doctor_Info,
-              attributes: {
-                exclude: ["id", "doctorId"],
-              },
             },
           ],
           raw: false,
@@ -197,9 +200,7 @@ let getListDoctorByHospitalService = (hospitalId, specialtyId) => {
             clinicId: hospitalId,
             specialtyId: specialtyId,
           },
-          attributes: {
-            exclude: ["id"],
-          },
+
           include: [
             {
               model: db.User,

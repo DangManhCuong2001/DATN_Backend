@@ -155,10 +155,32 @@ let deleteSpecialtyService = (specialtyId) => {
   });
 };
 
+let getTestService = (specialtyId) => {
+  return new Promise(async (resolve, reject) => {
+    let specialty = await db.Booking.findOne({
+      where: { id: specialtyId },
+    });
+    if (!specialty) {
+      resolve({
+        errCode: 2,
+        errMessage: `Specialty not found`,
+      });
+    }
+    await db.Specialty.destroy({
+      where: { id: specialtyId },
+    });
+    resolve({
+      errCode: 0,
+      message: `Delete success`,
+    });
+  });
+};
+
 module.exports = {
   getAllSpecialtyService: getAllSpecialtyService,
   createNewSpecialtyService: createNewSpecialtyService,
   getListSpecialtybyHospitalService: getListSpecialtybyHospitalService,
   editSpecialtyService: editSpecialtyService,
   deleteSpecialtyService: deleteSpecialtyService,
+  getTestService: getTestService,
 };
